@@ -31,6 +31,25 @@ BEGIN
 END example_arc;
 
 
+--  PR 1.54 Program 1.54
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
 
+ENTITY logic_circuit IS
+PORT(
+  x: IN   STD_LOGIC;
+  y: IN   STD_LOGIC;
+  z: IN   STD_LOGIC;
+  f: OUT  STD_LOGIC
+);
+END logic_circuit;
+
+ARCHITECTURE logic_flow OF logic_circuit IS
+  signal g, h: std_logic;
+begin
+  g <=  x       and y;
+  h <=  not(y)  and z;
+  f <=  g       or  h;
+end logic_flow;
 
 
