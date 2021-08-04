@@ -1,4 +1,4 @@
---ARCHITECTURE architecture_name OF entity_name IS
+--ARCHITECTURE architecture_name OF entity_name [IS]
 --    Declarations
 --BEGIN
 --    Statements
@@ -26,7 +26,7 @@ END ENTITY;
 
 ARCHITECTURE example_arc OF example_1_5 IS
 BEGIN
-  f1<= (a AND NOT (b)) or c;
+  f1<= (a AND (NOT b)) or c;
   f2<= a AND b AND (NOT(c));
 END example_arc;
 

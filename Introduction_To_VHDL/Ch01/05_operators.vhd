@@ -9,15 +9,21 @@
 
 
 
---7.2 Operators (IEEE Std 1076™-2002)
+--7.2 Operators (IEEE Std 1076â„¢-2002)
 --logical_operator        ::=   and | or  | nand  | nor | xor | xnor
 --relational_operator     ::=   =   | /=  | <     | <=  | >   | >=
 --shift_operator          ::=   sll | srl | sla   | sra | rol | ror
---adding_operator         ::=   +   | –   | &
---sign                    ::=   +   | –
+--adding_operator         ::=   +   | â€“   | &
+--sign                    ::=   +   | â€“
 --multiplying_operator    ::=   *   | /   | mod   | rem
 --miscellaneous_operator  ::=   **  | abs | not
 
+--    A = (A/B) âˆ— B +(A rem B)
+--where (A rem B) has the sign of A and an absolute value less than the absolute value of B.
+--
+--The result of the modulus operation is such that (A mod B) has the sign of B and an absolute value less than
+--the absolute value of B; in addition, for some integer value N, this result must satisfy the relation:
+--    A = B âˆ— N + (A mod B)
 
 
 LIBRARY IEEE;

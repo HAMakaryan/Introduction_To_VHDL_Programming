@@ -1,0 +1,7 @@
+file://D:\GitHub\Introduction_To_VHDL_Programming\Books\A_Tutorial_Introduction_To_VHDL_Programming.pdf
+file://D:\GitHub\Introduction_To_VHDL_Programming\Books\The_Designers_Guide_to_VHDL.pdf
+file://D:\GitHub\Introduction_To_VHDL_Programming\Books\VHDL_Programming_by_Example.pdf
+file://D:\GitHub\Introduction_To_VHDL_Programming\IEEE\ieee-1076-1987.pdf
+file://D:\GitHub\Introduction_To_VHDL_Programming\IEEE\ieee-1076-1993.pdf
+file://D:\GitHub\Introduction_To_VHDL_Programming\IEEE\ieee-1076-2000.pdf
+file://D:\GitHub\Introduction_To_VHDL_Programming\IEEE\ieee-1076-2002.pdf
