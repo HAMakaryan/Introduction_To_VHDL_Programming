@@ -19,8 +19,10 @@
 
 ENTITy f_function IS
 PORT(
-  x, y, z : IN  BIT;
-  f       : OUT BIT
+  x : IN  BIT;
+  y : IN  BIT;
+  z : IN  BIT;
+  f : OUT BIT
 );
 END ENTITY;
 
@@ -29,7 +31,7 @@ ARCHITECTURE logic_flow OF f_function IS
   SIGNAL concat : bit_vector(2 downto 0);
 
 BEGIN
---  f <= (((NOT x) AND (NOT y)) OR ((NOT y ) AND z ));
+  f <= (((NOT x) AND (NOT y)) OR ((NOT y ) AND z ));
 
 --x   y   z   f(x,y,z)
 --0   0   0     1
@@ -45,19 +47,20 @@ BEGIN
 -- With WHEN statement, it can be implemented as
 
 
---  f <= '1' WHEN (x = '0' AND y = '0' AND z = '0') ELSE
---       '1' WHEN (x = '0' AND y = '0' AND z = '1') ELSE
---       '1' WHEN (x = '1' AND y = '0' AND z = '1') ELSE
---       '0';
+  f <= '1' WHEN (x = '0' AND y = '0' AND z = '0') ELSE
+       '1' WHEN (x = '0' AND y = '0' AND z = '1') ELSE
+       '1' WHEN (x = '1' AND y = '0' AND z = '1') ELSE
+       '0';
 
---  f <= '1' WHEN (x = '0' AND y = '0' AND z = '0') OR
---                (x = '0' AND y = '0' AND z = '1') OR
---                (x = '1' AND y = '0' AND z = '1') ELSE
---       '0';
+  f <= '1' WHEN (x = '0' AND y = '0' AND z = '0') OR
+                (x = '0' AND y = '0' AND z = '1') OR
+                (x = '1' AND y = '0' AND z = '1') ELSE
+       '0';
 
 -- With SELECT statement, it can be implemented as
 concat <= (x & y & z);
 
+-- WITH (x & y & z) SELECT
 WITH concat SELECT
   f <= '1' WHEN "000",
        '1' WHEN "001",
