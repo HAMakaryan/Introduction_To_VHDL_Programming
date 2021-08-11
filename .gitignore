@@ -5,3 +5,14 @@ NI_VHDL.prj
 work/
 works/
 DXP/
+
+
+*.cache/
+*.ioplanning/
+*.runs/
+*.srcs/
+*.hw/
+*.ip_user_files/
+*.sim/
+*.xpr
+
