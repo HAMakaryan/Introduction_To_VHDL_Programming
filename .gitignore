@@ -6,7 +6,7 @@ work/
 works/
 DXP/
 
-
+*temp/
 *.cache/
 *.ioplanning/
 *.runs/
