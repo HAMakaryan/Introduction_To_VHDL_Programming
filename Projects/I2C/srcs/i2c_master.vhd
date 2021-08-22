@@ -158,12 +158,12 @@ BEGIN
       END CASE;
       END IF;
     WHEN data1 =>
-    sda_out <= tx_reg (8);
-    scl_out <= '0';
-    data_phase <= '1';
+    sda_out     <= tx_reg (8);
+    scl_out     <= '0';
+    data_phase  <= '1';
     IF  c_reg = qutr THEN
-      c_next <= (OTHERS => '0');
-    state_next <= data2;
+      c_next      <= (OTHERS => '0');
+      state_next  <= data2;
     END IF;
     WHEN data2 =>
       sda_out <= tx_reg (8);
@@ -187,12 +187,12 @@ BEGIN
       IF c_reg = qutr THEN
         c_next <= (OTHERS => '0');
         IF bit_reg = 8 THEN --done with 8 data bits + 1 ack
-          state_next <= data_end;
-          done_tick <= '1';
+          state_next  <= data_end;
+          done_tick   <= '1';
         ELSE
-          tx_next <= tx_reg (7 DOWNTO 0) & '0';
-          bit_next <= bit_reg + 1;
-          state_next <= data1;
+          tx_next     <= tx_reg (7 DOWNTO 0) & '0';
+          bit_next    <= bit_reg + 1;
+          state_next  <= data1;
         END IF;
       END IF;
     WHEN data_end =>
@@ -204,8 +204,8 @@ BEGIN
       END IF;
     WHEN restart => --generate idle condition
       if c_reg = half THEN
-      c_next <= (OTHERS => '0');
-      state_next <= start1;
+        c_next <= (OTHERS => '0');
+        state_next <= start1;
       END IF;
       WHEN stop1 => --  stop condition
       sda_out <= '0';
@@ -219,16 +219,5 @@ BEGIN
       END IF;
   END CASE;
 END PROCESS;
-
-
-
-
-
-
-
-
-
-
-
 
 END arch;
