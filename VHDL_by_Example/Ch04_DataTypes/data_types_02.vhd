@@ -29,7 +29,7 @@ ARCHITECTURE and5 OF and5 IS
 BEGIN
 
   PROCESS(a, b, c, d, e)
-    VARIABLE STATE : STD_LOGIC;
+    VARIABLE state : STD_LOGIC;
     VARIABLE delay : TIME;
   BEGIN
     state := a AND b AND c AND d AND e;

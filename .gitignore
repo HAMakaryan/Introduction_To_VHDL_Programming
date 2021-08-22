@@ -10,6 +10,7 @@ DXP/
 *.cache/
 *.ioplanning/
 *.runs/
+*.gen/
 *.srcs/
 *.hw/
 *.ip_user_files/

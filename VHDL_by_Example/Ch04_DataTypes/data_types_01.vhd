@@ -52,10 +52,6 @@ ARCHITECTURE data_flow OF board_design IS
   SIGNAL int_bus : bus_type;
   CONSTANT disconnect_value : bus_type := ('X', 'X', 'X', 'X', 'X', 'X', 'X', 'X');
 
-
-    TYPE fourval IS ( 'k', kaka, juju, llll );
-
-
 BEGIN
 
   int_bus   <=  data_in WHEN sys_clk = '1' ELSE
