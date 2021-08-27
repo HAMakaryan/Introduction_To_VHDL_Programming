@@ -1,4 +1,5 @@
 # cd D:/GitHub/Introduction_To_VHDL_Programming/Projects/I2C/srcs
+vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/I2C/srcs/i2c_master.vhd
 vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/I2C/srcs/i2c_master_tb.vhd
 restart -f
 run -all;

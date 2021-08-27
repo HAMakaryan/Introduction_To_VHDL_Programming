@@ -55,7 +55,7 @@ sda <= 'H';
 clk <= '0' WHEN clk = 'U' OR end_of_test = '1'
           ELSE  NOT clk AFTER 5 ns;
 
-reset <= '1' , '0' AFTER 16 ns;
+reset <= '1' , '0' AFTER 36 ns;
 
 PROCESS
 BEGIN
@@ -63,14 +63,21 @@ BEGIN
   wr_i2c      <= '0';
   dvsr <= STD_LOGIC_VECTOR(TO_UNSIGNED (24, 16));
   cmd  <= START_CMD;
-  WAIT UNTIL reset = '1';
+  WAIT UNTIL reset = '0';
   WAIT UNTIL clk = '1';
   WAIT UNTIL clk = '1';
   WAIT UNTIL clk = '1';
+
+  FOR i IN 1 to 10 LOOP
+    WAIT UNTIL clk = '1';
+  END LOOP;
+
   WAIT UNTIL rising_edge(clk);
+
   WHILE (ready = '0') LOOP
     WAIT UNTIL rising_edge(clk);
   END LOOP;
+
   din <= "01100110";
   WAIT UNTIL rising_edge(clk);
   wr_i2c  <= '1';
@@ -93,12 +100,6 @@ BEGIN
   wr_i2c  <= '1';
   WAIT UNTIL ready = '0';
   wr_i2c  <= '0';
-
-
-
-
-
-
   WAIT FOR 2 us;
   end_of_test <= '1';
   WAIT;
