@@ -4,13 +4,13 @@ USE IEEE.NUMERIC_STD.ALL;
 ENTITY i2c_master IS
 PORT
   (
-    clk       : IN    STD_LOGIC;
+    clk       : IN    STD_LOGIC;  -- 100 MHz
     reset     : IN    STD_LOGIC;
     din       : IN    STD_LOGIC_VECTOR ( 7 DOWNTO 0);
     cmd       : IN    STD_LOGIC_VECTOR ( 2 DOWNTO 0);
     dvsr      : IN    STD_LOGIC_VECTOR (15 DOWNTO 0);
     wr_i2c    : IN    STD_LOGIC;
-    scl       : OUT   STD_LOGIC;
+    scl       : OUT   STD_LOGIC;  -- 10 kHz
     sda       : INOUT STD_LOGIC;
     ready     : OUT   STD_LOGIC;
     done_tick : OUT   STD_LOGIC;
