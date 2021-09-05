@@ -94,6 +94,13 @@ BEGIN
   wr_i2c  <= '1';
   WAIT UNTIL ready = '0';
   wr_i2c  <= '0';
+  din <= "01100111";
+  WAIT UNTIL done_tick = '1';
+  WAIT UNTIL ready = '1';
+  cmd  <= RD_CMD;
+  wr_i2c  <= '1';
+  WAIT UNTIL ready = '0';
+  wr_i2c  <= '0';
   WAIT UNTIL done_tick = '1';
   WAIT UNTIL ready = '1';
   cmd  <= STOP_CMD;
