@@ -26,7 +26,7 @@ CONSTANT WR_CMD       : STD_LOGIC_VECTOR (2 DOWNTO 0) := "001";
 CONSTANT RD_CMD       : STD_LOGIC_VECTOR (2 DOWNTO 0) := "010";
 CONSTANT STOP_CMD     : STD_LOGIC_VECTOR (2 DOWNTO 0) := "011";
 CONSTANT RESTART_CMD  : STD_LOGIC_VECTOR (2 DOWNTO 0) := "100";
-type statetype IS ( idle, hold, start1, start2, data1, data2,
+TYPE statetype IS ( idle, hold, start1, start2, data1, data2,
                     data3, data4, data_end, restart, stop1, stop2
 );
 
