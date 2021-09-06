@@ -67,21 +67,19 @@ END COMPONENT;
   SIGNAL  wr_i2c    : STD_LOGIC;
   SIGNAL  ready     : STD_LOGIC;
   SIGNAL  done_tick : STD_LOGIC;
-  SIGNAL  ack       : STD_LOGIC;
   SIGNAL  ack_in    : STD_LOGIC;
 
   BEGIN
 
   wready  <= wready_in;
-  ack     <= ack_in;
 
 ACKNOWLEDGE : PROCESS (clk)
 BEGIN
   IF reset = '1' THEN
-    ack_in <= '0';
+    nack <= '0';
   ELSIF clk = '1' AND clk'event THEN
     IF done_tick = '1' THEN
-      ack_in <= ack;
+      nack <= ack_in;
     END IF;
   END IF;
 END PROCESS;
@@ -157,10 +155,25 @@ BEGIN
         END IF;
       WHEN I2C_READ =>
         IF ready = '1' THEN
-          byte_cnt  <= byte_cnt - 1;
+            rvalid <= '1';
+            IF rready = '1' THEN
+             wr_i2c    <= '1';
+             byte_cnt  <= byte_cnt - 1;
+                IF byte_cnt = "00001" THEN
+                  i2c_din(0) <= NAC;
+                ELSIF byte_cnt = "00000" THEN
+                  fsm       <= I2C_STOP;
+                ELSE
+                  i2c_din(0) <= AC;
+                END IF;
+            END IF;
         END IF;
       WHEN I2C_STOP =>
-        NULL;
+       IF ready = '1' THEN
+        fsm <= IDLE;
+        i2c_cmd  <= STOP_CMD;
+        wr_i2c    <= '1';
+       END IF;
       WHEN I2C_WRITE =>
         wready_in <=  '1';
         IF ready = '1' THEN
