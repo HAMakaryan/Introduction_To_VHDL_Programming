@@ -2,7 +2,7 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
-ENTITY UART IS
+ENTITY uart IS
 GENERIC (
   DBIT    : INTEGER := 8;   -- # data bits
   SB_TICK : INTEGER := 16;  -- # ticks for stop bits, 16 per bit

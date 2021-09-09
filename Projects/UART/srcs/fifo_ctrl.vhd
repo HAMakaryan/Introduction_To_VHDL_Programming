@@ -71,16 +71,16 @@ BEGIN
         END IF;
       END IF;
     WHEN "10" => --  write
-    IF (full_reg /= '1') THEN --  not f u l l
+    IF (full_reg /= '1') THEN --  not full
       w_ptr_next <= w_ptr_succ;
       empty_next <= '0';
       IF (w_ptr_succ = r_ptr_reg) THEN
         full_next <= '1';
       END IF;
     END IF;
-    WHEN OTHERS => --  wr i t e / read;
-    w_ptr_next <= w_ptr_succ;
-    r_ptr_next <= r_ptr_succ;
+    WHEN OTHERS => --  write/read;
+      w_ptr_next <= w_ptr_succ;
+      r_ptr_next <= r_ptr_succ;
   END CASE;
 END PROCESS;
 

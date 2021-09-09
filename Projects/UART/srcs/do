@@ -1,1 +1,5 @@
-cd D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART
+# cd D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART
+vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART/srcs/uart_tb.vhd
+
+restart -f
+run -all;

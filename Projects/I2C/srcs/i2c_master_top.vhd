@@ -68,9 +68,11 @@ END COMPONENT;
   SIGNAL  ready     : STD_LOGIC;
   SIGNAL  done_tick : STD_LOGIC;
   SIGNAL  ack_in    : STD_LOGIC;
+  SIGNAL  wr_i2c_com : STD_LOGIC;
 
   BEGIN
 
+wr_i2c_com <= wr_i2c AND ready;
   wready  <= wready_in;
 
 ACKNOWLEDGE : PROCESS (clk)
@@ -88,16 +90,23 @@ FSMD : PROCESS (clk)
 BEGIN
   IF reset = '1' THEN
     fsm       <= IDLE;
-    wr_i2c    <=  '0';
-    wready_in <=  '0';
+    wr_i2c    <= '0';
+    wready_in <= '0';
+    rvalid    <= '0';
     i2c_din   <= (OTHERS => '0');
     i2c_cmd   <= (OTHERS => '0');
     byte_cnt  <= (OTHERS => '0');
+    s_addr    <= (OTHERS => '0');
+    din       <= (OTHERS => '0');
+    cmd       <= (OTHERS => '0');
+    dvsr      <= (OTHERS => '0');
   ELSIF clk = '1' AND clk'event THEN
     wready_in <= '0';
+    rvalid    <= '0';
     wr_i2c    <= '0';
     i2c_din   <= din;
     i2c_cmd   <= cmd(7 DOWNTO 5);
+
     CASE (fsm) IS
       WHEN IDLE =>
         wready_in <=  '1';
@@ -105,17 +114,17 @@ BEGIN
           CASE (waddr) IS
             WHEN "000" =>
               din <= wdata;
-            WHEN "101" =>
+            WHEN "001" =>
               s_addr <= wdata(6 DOWNTO 0);
-            WHEN "010" =>
+            WHEN "111" =>
               cmd <= wdata;
               IF wdata(7 DOWNTO 5) = WR_CMD OR
                  wdata(7 DOWNTO 5) = RD_CMD THEN
                 fsm <= I2C_START;
               END IF;
-            WHEN "100" =>
+            WHEN "010" =>
               dvsr( 7 DOWNTO 0) <= wdata;
-            WHEN "111" =>
+            WHEN "011" =>
               dvsr(15 DOWNTO 8) <= wdata;
             WHEN OTHERS =>
               NULL;
@@ -125,7 +134,10 @@ BEGIN
         IF ready = '1' THEN
           wr_i2c  <= '1';
           i2c_cmd <= START_CMD;
-          fsm     <= REQUEST;
+          IF wr_i2c = '1' THEN
+            wr_i2c <= '0';
+            fsm     <= REQUEST;
+          END IF;
         END IF;
       WHEN REQUEST =>
         IF ready = '1' THEN
@@ -208,7 +220,7 @@ PORT MAP
     din       => i2c_din,
     cmd       => i2c_cmd,
     dvsr      => dvsr,
-    wr_i2c    => wr_i2c,
+    wr_i2c    => wr_i2c_com,
     scl       => scl,
     sda       => sda,
     ready     => ready,
