@@ -48,9 +48,9 @@ BEGIN
   WAIT UNTIL rising_edge(clk);
   w_data  <= "01010101";
   WAIT UNTIL rising_edge(clk);
-  w_data  <= "00001111";
+  w_data  <= "00001110";
   WAIT UNTIL rising_edge(clk);
-  w_data  <= "11110000";
+  w_data  <= "01110000";
   WAIT UNTIL rising_edge(clk);
   wr_uart <= '0';
 
