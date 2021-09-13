@@ -1,5 +1,14 @@
 # cd D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART
 vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART/srcs/uart_tb.vhd
+vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART/srcs/fifo_ctrl.vhd
+vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART/srcs/reg_file.vhd
+vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART/srcs/fifo.vhd
+vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART/srcs/uart_rx.vhd
+vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART/srcs/uart_tx.vhd
+vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART/srcs/baud_gen.vhd
+vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART/srcs/uart.vhd
+vcom -reportprogress 300 -work work D:/GitHub/Introduction_To_VHDL_Programming/Projects/UART/srcs/uart_tb.vhd
 
-restart -f
-run -all;
+
+#restart -f
+#run -all;

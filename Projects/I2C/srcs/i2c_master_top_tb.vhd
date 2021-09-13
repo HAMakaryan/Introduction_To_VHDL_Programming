@@ -81,7 +81,12 @@ BEGIN
       scl_count =  9 OR
       scl_count = 18 OR
       scl_count = 27 OR
-      scl_count = 36 OR
+      scl_count = 70 OR
+      scl_count = 77 OR
+      scl_count = 84 OR
+      scl_count = 94 OR
+      scl_count = 103 OR
+      scl_count = 111 OR
       scl_count = 46
     THEN
       sda <= '0';

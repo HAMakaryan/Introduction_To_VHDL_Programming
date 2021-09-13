@@ -52,7 +52,7 @@ END COMPONENT;
   CONSTANT AC           : STD_LOGIC := '0';
   CONSTANT NAC          : STD_LOGIC := '1';
   TYPE fsm_type IS (
-    IDLE, I2C_WR1, I2C_WR2, I2C_READ, I2C_STOP,
+    IDLE, I2C_WR1, I2C_WR2, I2C_READ1, I2C_READ2, I2C_STOP,
     I2C_START, REQUEST, RESPONSE
   );
   SIGNAL  fsm       : fsm_type;
@@ -157,7 +157,7 @@ BEGIN
           ELSIF cmd(6) = '0' THEN
             fsm <= I2C_WR1;
           ELSE
-            fsm       <= I2C_READ;
+            fsm       <= I2C_READ1;
             i2c_cmd   <= RD_CMD;
             IF byte_cnt = "00001" THEN
               i2c_din(0) <= NAC;
@@ -168,7 +168,25 @@ BEGIN
             END IF;
           END IF;
         END IF;
-      WHEN I2C_READ =>
+      WHEN I2C_READ1 =>
+        IF ready = '1' THEN
+          wr_i2c    <= '1';
+          IF wr_i2c = '1' THEN
+            wr_i2c    <= '0';
+            byte_cnt  <= byte_cnt - 1;
+            fsm       <= I2C_READ2;
+          END IF;
+          IF byte_cnt = "00001" THEN
+            i2c_din(0) <= NAC;
+          ELSIF byte_cnt = "00000" THEN
+            fsm       <= I2C_STOP;
+            wr_i2c    <= '0';
+            byte_cnt  <= byte_cnt - 1;
+          ELSE
+            i2c_din(0) <= AC;
+          END IF;
+        END IF;
+      WHEN I2C_READ2 =>
         IF ready = '1' THEN
           rvalid    <= '1';
           wr_i2c    <= '1';
@@ -213,7 +231,6 @@ BEGIN
           byte_cnt  <= byte_cnt-1;
           fsm       <= I2C_WR1;
         END IF;
-        NULL;
       WHEN OTHERS =>
         NULL;
     END CASE;
