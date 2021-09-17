@@ -44,6 +44,9 @@ PORT
 );
 END COMPONENT;
 
+
+
+
   CONSTANT START_CMD    : STD_LOGIC_VECTOR (2 DOWNTO 0) := "000";
   CONSTANT WR_CMD       : STD_LOGIC_VECTOR (2 DOWNTO 0) := "001";
   CONSTANT RD_CMD       : STD_LOGIC_VECTOR (2 DOWNTO 0) := "010";
@@ -93,7 +96,6 @@ BEGIN
     wr_i2c    <= '0';
     wready_in <= '0';
     rvalid    <= '0';
-    i2c_din   <= (OTHERS => '0');
     i2c_cmd   <= (OTHERS => '0');
     byte_cnt  <= (OTHERS => '0');
     s_addr    <= (OTHERS => '0');
@@ -104,7 +106,6 @@ BEGIN
     wready_in <= '0';
     rvalid    <= '0';
     wr_i2c    <= '0';
-    i2c_din   <= din;
     i2c_cmd   <= cmd(7 DOWNTO 5);
 
     CASE (fsm) IS
@@ -142,7 +143,6 @@ BEGIN
       WHEN REQUEST =>
         IF ready = '1' THEN
           wr_i2c    <= '1';
-          i2c_din   <= s_addr & cmd (6);
           i2c_cmd   <= WR_CMD;
           byte_cnt  <= cmd (4 DOWNTO 0);
           IF wr_i2c = '1' THEN
@@ -159,12 +159,9 @@ BEGIN
           ELSE
             fsm       <= I2C_READ1;
             i2c_cmd   <= RD_CMD;
-            IF byte_cnt = "00001" THEN
-              i2c_din(0) <= NAC;
-            ELSIF byte_cnt = "00000" THEN
+            IF byte_cnt = "00000" THEN
               fsm       <= I2C_STOP;
             ELSE
-              i2c_din(0) <= AC;
             END IF;
           END IF;
         END IF;
@@ -176,14 +173,10 @@ BEGIN
             byte_cnt  <= byte_cnt - 1;
             fsm       <= I2C_READ2;
           END IF;
-          IF byte_cnt = "00001" THEN
-            i2c_din(0) <= NAC;
-          ELSIF byte_cnt = "00000" THEN
+          IF byte_cnt = "00000" THEN
             fsm       <= I2C_STOP;
             wr_i2c    <= '0';
             byte_cnt  <= byte_cnt - 1;
-          ELSE
-            i2c_din(0) <= AC;
           END IF;
         END IF;
       WHEN I2C_READ2 =>
@@ -194,14 +187,10 @@ BEGIN
             wr_i2c    <= '0';
             byte_cnt  <= byte_cnt - 1;
           END IF;
-          IF byte_cnt = "00001" THEN
-            i2c_din(0) <= NAC;
-          ELSIF byte_cnt = "00000" THEN
+          IF byte_cnt = "00000" THEN
             fsm       <= I2C_STOP;
             wr_i2c    <= '0';
             byte_cnt  <= byte_cnt - 1;
-          ELSE
-            i2c_din(0) <= AC;
           END IF;
         END IF;
       WHEN I2C_STOP =>
@@ -224,8 +213,8 @@ BEGIN
           END IF;
         END IF;
       WHEN I2C_WR2 =>
-        i2c_cmd   <= WR_CMD;
-        wr_i2c    <= '1';
+        i2c_cmd <= WR_CMD;
+        wr_i2c  <= '1';
         IF wr_i2c = '1' THEN
           wr_i2c    <= '0';
           byte_cnt  <= byte_cnt-1;
@@ -238,12 +227,10 @@ BEGIN
 END PROCESS;
 
 
-PN: PROCESS (clk)
-BEGIN
-  IF reset = '1' THEN
-  ELSIF clk = '1' AND clk'event THEN
-  END IF;
-END PROCESS;
+i2c_din   <= s_addr & cmd (6) WHEN fsm = REQUEST AND ready = '1',
+           "00000000" WHEN  i2c_cmd = RD_CMD  AND byte_cnt = "00001",
+           "00000001" WHEN  i2c_cmd = RD_CMD  AND byte_cnt = "00000",
+          ELSE w_fifo_r_data;
 
 i2c_master_drv : i2c_master
 PORT MAP
@@ -262,4 +249,25 @@ PORT MAP
     dout      => rdata
 );
 
+
+wr_fifo : fifo
+GENERIC MAP(
+  ADDR_WIDTH  => 4,
+  DATA_WIDTH  => 8
+);
+PORT(
+  clk     => clk,
+  reset   => reset,
+  rd      => w_fifo_rd,
+  wr      => w_fifo_wr,
+  w_data  => w_fifo_w_data,
+  empty   => w_fifo_empty,
+  full    => w_fifo_full,
+  r_data  => w_fifo_r_data
+);
+END COMPONENT;
+
+
+
 END ARCHITECTURE rtl;
+
