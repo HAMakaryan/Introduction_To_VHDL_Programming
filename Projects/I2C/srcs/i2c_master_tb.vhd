@@ -18,7 +18,8 @@ PORT
     dvsr      : IN    STD_LOGIC_VECTOR (15 DOWNTO 0);
     wr_i2c    : IN    STD_LOGIC;
     scl       : OUT   STD_LOGIC;  -- 10 kHz
-    sda       : INOUT STD_LOGIC;
+    sda_i     : IN    STD_LOGIC;
+    sda_en    : OUT   STD_LOGIC;
     ready     : OUT   STD_LOGIC;
     done_tick : OUT   STD_LOGIC;
     ack       : OUT   STD_LOGIC;
@@ -34,6 +35,8 @@ SIGNAL dvsr      : STD_LOGIC_VECTOR (15 DOWNTO 0);
 SIGNAL wr_i2c    : STD_LOGIC;
 SIGNAL scl       : STD_LOGIC;  -- 10 kHz
 SIGNAL sda       : STD_LOGIC;
+SIGNAL sda_i     : STD_LOGIC;
+SIGNAL sda_en    : STD_LOGIC;
 SIGNAL ready     : STD_LOGIC;
 SIGNAL done_tick : STD_LOGIC;
 SIGNAL ack       : STD_LOGIC;
@@ -50,7 +53,10 @@ CONSTANT RESTART_CMD  : STD_LOGIC_VECTOR (2 DOWNTO 0) := "100";
 BEGIN
 
 scl <= 'H';
-sda <= 'H';
+
+sda_i <= sda;
+sda   <= '0' WHEN sda_en = '0' ELSE
+          'H';
 
 clk <= '0' WHEN clk = 'U' OR end_of_test = '1'
           ELSE  NOT clk AFTER 5 ns;
@@ -122,7 +128,8 @@ PORT MAP
     dvsr      => dvsr,
     wr_i2c    => wr_i2c,
     scl       => scl,
-    sda       => sda,
+    sda_i     => sda_i,
+    sda_en    => sda_en,
     ready     => ready,
     done_tick => done_tick ,
     ack       => ack,

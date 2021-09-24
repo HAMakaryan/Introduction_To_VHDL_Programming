@@ -11,7 +11,8 @@ PORT
     dvsr      : IN    STD_LOGIC_VECTOR (15 DOWNTO 0);
     wr_i2c    : IN    STD_LOGIC;
     scl       : OUT   STD_LOGIC;  -- 10 kHz
-    sda       : INOUT STD_LOGIC;
+    sda_i     : IN    STD_LOGIC;
+    sda_en    : OUT   STD_LOGIC;
     ready     : OUT   STD_LOGIC;
     done_tick : OUT   STD_LOGIC;
     ack       : OUT   STD_LOGIC;
@@ -48,7 +49,7 @@ BEGIN
 ----**********************************************
 ----        output control logic
 ----**********************************************
-----    buffer for sda and scl lines
+----    buffer for sda_i and scl lines
 
 PROCESS(clk, reset )
 BEGIN
@@ -62,14 +63,12 @@ BEGIN
 END PROCESS;
 -- only master drives scl line
 scl <= 'Z' WHEN scl_reg = '1' ELSE '0';
--- sda are with pull up resistors
--- and becomes hi gh when not driven
 
 into <= '1' WHEN (data_phase = '1' AND cmd_reg = RD_CMD AND bit_reg < 8) OR
                  (data_phase = '1' AND cmd_reg = WR_CMD AND bit_reg = 8)
             ELSE '0';
 
-sda  <= 'Z' WHEN into = '1' OR sda_reg = '1'
+sda_en  <= '1' WHEN into = '1' OR sda_reg = '1'
             ELSE '0';
 
 --  output
@@ -106,7 +105,7 @@ half <= qutr (14 DOWNTO 0) & '0'; -- half = 2*qutr
 
 --  next state logic
 PROCESS(state_reg, bit_reg, tx_reg, c_reg, rx_reg, cmd_reg,
-        cmd, din, wr_i2c, sda, nack, qutr, half)
+        cmd, din, wr_i2c, sda_i, nack, qutr, half)
 BEGIN
   state_next  <= state_reg;
   c_next      <= c_reg + 1; --  timer counts continuously
@@ -171,7 +170,7 @@ BEGIN
       IF c_reg = QUTR THEN
         c_next <= (OTHERS => '0');
         state_next <= data3;
-        rx_next <= rx_reg (7 DOWNTO 0) & sda;
+        rx_next <= rx_reg (7 DOWNTO 0) & sda_i;
       END IF;
     WHEN data3 =>
       sda_out <= tx_reg (8);
