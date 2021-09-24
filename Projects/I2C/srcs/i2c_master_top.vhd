@@ -45,6 +45,23 @@ PORT
 END COMPONENT;
 
 
+COMPONENT fifo IS
+GENERIC(
+  ADDR_WIDTH : integer := 2;
+  DATA_WIDTH : integer := 8
+);
+PORT(
+  clk     : IN STD_LOGIC;
+  reset   : IN STD_LOGIC;
+  rd      : IN STD_LOGIC;
+  wr      : IN STD_LOGIC;
+  w_data  : IN STD_LOGIC_VECTOR ( DATA_WIDTH - 1 DOWNTO 0);
+  empty   : OUT STD_LOGIC;
+  full    : OUT STD_LOGIC;
+  r_data  : OUT STD_LOGIC_VECTOR ( DATA_WIDTH - 1 DOWNTO 0)
+);
+END COMPONENT;
+
 
 
   CONSTANT START_CMD    : STD_LOGIC_VECTOR (2 DOWNTO 0) := "000";
@@ -72,6 +89,23 @@ END COMPONENT;
   SIGNAL  done_tick : STD_LOGIC;
   SIGNAL  ack_in    : STD_LOGIC;
   SIGNAL  wr_i2c_com : STD_LOGIC;
+
+  SIGNAL  w_fifo_rd      : STD_LOGIC;
+  SIGNAL  w_fifo_wr      : STD_LOGIC;
+  SIGNAL  w_fifo_w_data  : STD_LOGIC_VECTOR ( 7 DOWNTO 0);
+  SIGNAL  w_fifo_empty   : STD_LOGIC;
+  SIGNAL  w_fifo_full    : STD_LOGIC;
+  SIGNAL  w_fifo_r_data  : STD_LOGIC_VECTOR ( 7 DOWNTO 0);
+
+  SIGNAL  r_fifo_rd      : STD_LOGIC;
+  SIGNAL  r_fifo_wr      : STD_LOGIC;
+  SIGNAL  r_fifo_w_data  : STD_LOGIC_VECTOR ( 7 DOWNTO 0);
+  SIGNAL  r_fifo_empty   : STD_LOGIC;
+  SIGNAL  r_fifo_full    : STD_LOGIC;
+  SIGNAL  r_fifo_r_data  : STD_LOGIC_VECTOR ( 7 DOWNTO 0);
+
+
+
 
   BEGIN
 
@@ -176,7 +210,6 @@ BEGIN
           IF byte_cnt = "00000" THEN
             fsm       <= I2C_STOP;
             wr_i2c    <= '0';
-            byte_cnt  <= byte_cnt - 1;
           END IF;
         END IF;
       WHEN I2C_READ2 =>
@@ -227,10 +260,10 @@ BEGIN
 END PROCESS;
 
 
-i2c_din   <= s_addr & cmd (6) WHEN fsm = REQUEST AND ready = '1',
-           "00000000" WHEN  i2c_cmd = RD_CMD  AND byte_cnt = "00001",
-           "00000001" WHEN  i2c_cmd = RD_CMD  AND byte_cnt = "00000",
-          ELSE w_fifo_r_data;
+i2c_din   <= s_addr & cmd (6) WHEN fsm = REQUEST AND ready = '1' ELSE
+                   "00000000" WHEN  i2c_cmd = RD_CMD  AND byte_cnt = "00001" ELSE
+                   "00000001" WHEN  i2c_cmd = RD_CMD  AND byte_cnt = "00000" ELSE
+                  w_fifo_r_data;
 
 i2c_master_drv : i2c_master
 PORT MAP
@@ -254,8 +287,8 @@ wr_fifo : fifo
 GENERIC MAP(
   ADDR_WIDTH  => 4,
   DATA_WIDTH  => 8
-);
-PORT(
+)
+PORT MAP (
   clk     => clk,
   reset   => reset,
   rd      => w_fifo_rd,
@@ -265,7 +298,24 @@ PORT(
   full    => w_fifo_full,
   r_data  => w_fifo_r_data
 );
-END COMPONENT;
+
+
+
+rd_fifo : fifo
+GENERIC MAP(
+  ADDR_WIDTH  => 4,
+  DATA_WIDTH  => 8
+)
+PORT MAP (
+  clk     => clk,
+  reset   => reset,
+  rd      => r_fifo_rd,
+  wr      => r_fifo_wr,
+  w_data  => r_fifo_w_data,
+  empty   => r_fifo_empty,
+  full    => r_fifo_full,
+  r_data  => r_fifo_r_data
+);
 
 
 
